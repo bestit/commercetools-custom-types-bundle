@@ -1,0 +1,27 @@
+{
+    "autoload": {
+        "psr-4": {
+            "BestIt\\CTCustomTypesBundle\\": "src/"
+        }
+    },
+    "name": "bestit/commercetools-custom-types-bundle",
+    "description": "Bundle to help you with the creation of custom types.",
+    "require": {
+        "commercetools/php-sdk": "^1.4",
+        "php": "^7",
+        "symfony/symfony": "^3.1"
+    },
+    "require-dev": {
+        "sensio/generator-bundle": "^3.0",
+        "symfony/phpunit-bridge": "^3.0",
+        "phpunit/phpunit": "^5.4"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Bjoern Lange",
+            "email": "lange@bestit-online.de"
+        }
+    ],
+    "minimum-stability": "beta"
+}
