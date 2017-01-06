@@ -591,10 +591,6 @@ class ProcessCTCustomTypesCommand extends ContainerAwareCommand
             $saved = ($response instanceof ErrorResponse)
                 ? sprintf('%s (%s)', $response->getMessage(), $response->getCorrelationId())
                 : false;
-
-            if ($response instanceof ErrorResponse) {
-                var_dump($response->getErrors(), $response->getRequest()->httpRequest()->getBody()->getContents());
-            }
         }
         return $saved;
     }
