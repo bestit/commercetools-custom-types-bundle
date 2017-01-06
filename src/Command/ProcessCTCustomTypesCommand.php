@@ -417,7 +417,7 @@ class ProcessCTCustomTypesCommand extends ContainerAwareCommand
      * @param LocalizedString $oldValue
      * @return bool
      */
-    public function isDescriptionChanged(array $newValue, LocalizedString $oldValue): bool
+    private function isDescriptionChanged(array $newValue, LocalizedString $oldValue): bool
     {
         $oldValue = $oldValue->toArray();
 
@@ -433,7 +433,7 @@ class ProcessCTCustomTypesCommand extends ContainerAwareCommand
      * @param LocalizedString $savedName
      * @return bool
      */
-    public function isNameChanged(array $newName, LocalizedString $savedName): bool
+    private function isNameChanged(array $newName, LocalizedString $savedName): bool
     {
         $savedName = $savedName->toArray();
 
@@ -465,6 +465,7 @@ class ProcessCTCustomTypesCommand extends ContainerAwareCommand
      * Moves the array key to an array value.
      * @param array $structure
      * @return array
+     * @todo Support more types.
      */
     private function parseCustomTypeStructure(array $structure): array
     {
@@ -473,9 +474,18 @@ class ProcessCTCustomTypesCommand extends ContainerAwareCommand
 
             array_walk($type['fieldDefinitions'], function (&$typeField, $fieldName) {
                 $typeField['name'] = $fieldName;
-                $typeField['type'] = [
-                    'name' => $typeField['type']
-                ];
+
+                if (!$typeField['type']['values']) {
+                    unset($typeField['type']['values']);
+                } else {
+                    $values = [];
+
+                    array_walk($typeField['type']['values'], function($label, $key) use (&$values) {
+                        $values[] = ['key' => $key, 'label' => $label];
+                    });
+
+                    $typeField['type']['values'] = $values;
+                }
             });
 
             // Remove the string keys.
@@ -581,6 +591,10 @@ class ProcessCTCustomTypesCommand extends ContainerAwareCommand
             $saved = ($response instanceof ErrorResponse)
                 ? sprintf('%s (%s)', $response->getMessage(), $response->getCorrelationId())
                 : false;
+
+            if ($response instanceof ErrorResponse) {
+                var_dump($response->getErrors(), $response->getRequest()->httpRequest()->getBody()->getContents());
+            }
         }
         return $saved;
     }

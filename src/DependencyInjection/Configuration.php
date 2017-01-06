@@ -68,7 +68,7 @@ class Configuration implements ConfigurationInterface
                         ->isRequired()
                         ->prototype('scalar')->isRequired()->end()
                     ->end()
-                    // TODO: We still need to support enum, sets, etc.
+                    // TODO: We still need to support localizedenum, sets, reference, etc.
                     ->arrayNode('fieldDefinitions')
                         ->info('http://dev.commercetools.com/http-api-projects-types.html#fielddefinition')
                         ->isRequired()
@@ -76,7 +76,29 @@ class Configuration implements ConfigurationInterface
                         ->useAttributeAsKey('name')
                         ->prototype('array')
                             ->children()
-                                ->scalarNode('type')->isRequired()->end()
+                                ->arrayNode('type')
+                                    ->isRequired()
+                                    ->children()
+                                        ->enumNode('name')
+                                            ->isRequired()
+                                            ->values([
+                                                'Boolean',
+                                                'String',
+                                                'LocalizedString',
+                                                'Enum',
+                                                'Number',
+                                                'Money',
+                                                'Date',
+                                                'Time',
+                                                'DateTime'
+                                            ])
+                                        ->end()
+                                        ->arrayNode('values')
+                                            ->useAttributeAsKey('key')
+                                            ->prototype('scalar')->end()
+                                        ->end()
+                                    ->end()
+                                ->end()
                                 ->booleanNode('required')->isRequired()->defaultValue(false)->end()
                                 ->enumNode('inputHint')->isRequired()->values(['MultiLine', 'SingleLine'])->end()
                                 ->arrayNode('label')
