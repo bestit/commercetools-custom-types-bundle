@@ -480,11 +480,21 @@ class ProcessCTCustomTypesCommand extends ContainerAwareCommand
                 } else {
                     $values = [];
 
-                    array_walk($typeField['type']['values'], function($label, $key) use (&$values) {
+                    array_walk($typeField['type']['values'], function ($label, $key) use (&$values) {
                         $values[] = ['key' => $key, 'label' => $label];
                     });
 
                     $typeField['type']['values'] = $values;
+                }
+
+                if (($typeField['type']['name'] === 'Set') && (@$typeField['type']['elementType']['values'])) {
+                    $values = [];
+
+                    array_walk($typeField['type']['elementType']['values'], function ($label, $key) use (&$values) {
+                        $values[] = ['key' => $key, 'label' => $label];
+                    });
+
+                    $typeField['type']['elementType']['values'] = $values;
                 }
             });
 

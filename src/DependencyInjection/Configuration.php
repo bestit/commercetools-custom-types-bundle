@@ -90,8 +90,36 @@ class Configuration implements ConfigurationInterface
                                                 'Money',
                                                 'Date',
                                                 'Time',
-                                                'DateTime'
+                                                'DateTime',
+                                                'Set'
                                             ])
+                                        ->end()
+                                        ->arrayNode('elementType')
+                                            ->info(
+                                                'Specially used to the set type: <http://dev.commercetools.com/' .
+                                                'http-api-projects-types.html#settype>'
+                                            )
+                                            ->children()
+                                                ->enumNode('name')
+                                                    ->isRequired()
+                                                    ->values([
+                                                        'Boolean',
+                                                        'String',
+                                                        'LocalizedString',
+                                                        'Enum',
+                                                        'Number',
+                                                        'Money',
+                                                        'Date',
+                                                        'Time',
+                                                        'DateTime',
+                                                        'Set'
+                                                    ])
+                                                ->end()
+                                                ->arrayNode('values')
+                                                    ->useAttributeAsKey('key')
+                                                    ->prototype('scalar')->end()
+                                                ->end()
+                                            ->end()
                                         ->end()
                                         ->arrayNode('values')
                                             ->useAttributeAsKey('key')
