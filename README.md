@@ -48,6 +48,9 @@ class AppKernel extends Kernel
 ### Step 3: Configure
 
 ```yml
+# Default configuration for "BestItCTCustomTypesBundle"
+best_it_ct_custom_types:
+
     # Add the types mainly documented under: <https://dev.commercetools.com/http-api-projects-types.html>
     types:
 
@@ -70,7 +73,20 @@ class AppKernel extends Kernel
 
                 # Prototype
                 name:
-                    type:                 ~ # Required
+                    type:                 # Required
+                        name:                 ~ # One of "Boolean"; "String"; "LocalizedString"; "Enum"; "Number"; "Money"; "Date"; "Time"; "DateTime"; "Set", Required
+
+                        # Specially used to the set type: <http://dev.commercetools.com/http-api-projects-types.html#settype>
+                        elementType:
+                            name:                 ~ # One of "Boolean"; "String"; "LocalizedString"; "Enum"; "Number"; "Money"; "Date"; "Time"; "DateTime"; "Set", Required
+                            values:
+
+                                # Prototype
+                                key:                  ~
+                        values:
+
+                            # Prototype
+                            key:                  ~
                     required:             false # Required
                     inputHint:            ~ # One of "MultiLine"; "SingleLine", Required
                     label:                # Required
