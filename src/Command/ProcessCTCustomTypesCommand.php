@@ -43,7 +43,6 @@ class ProcessCTCustomTypesCommand extends ContainerAwareCommand
     /**
      * Maps checks and action creation for a field name.
      * @var array
-     * @todo Support ENUM.
      */
     const CHANGE_MAP = [
         ['fieldDefinitions', 'hasChangedFieldDefinitionLabel', 'getChangeFieldDefinitionLabelActions'],
@@ -74,6 +73,12 @@ class ProcessCTCustomTypesCommand extends ContainerAwareCommand
     private $typesConfig = null;
 
     /**
+     * The inputted or created whitelist.
+     * @var string|void
+     */
+    protected $whitelist = null;
+
+    /**
      * Configures this command.
      * @return void
      */
@@ -85,7 +90,8 @@ class ProcessCTCustomTypesCommand extends ContainerAwareCommand
             ->addArgument(
                 'whitelist',
                 InputArgument::OPTIONAL,
-                'Pregex for whitelisting which custom type keys should be handled with this bundle.',
+                'Pregex (without delimiters) for whitelisting which custom type keys should be handled ' .
+                'with this bundle.',
                 ''
             );
     }
@@ -95,14 +101,10 @@ class ProcessCTCustomTypesCommand extends ContainerAwareCommand
      * @param string $filter Filter the types with a regex by their key, to only work on allowed types.
      * @return array false or Error-Message per Type-Key if there is something wrong.
      */
-    private function deleteOldCustomTypes(string $filter): array
+    private function deleteOldCustomTypes(string $filter = ''): array
     {
         $results = [];
         $structure = $this->getCustomTypesConfig();
-
-        if ($filter) {
-            $filter = '/' . preg_quote($filter, '/') . '/';
-        }
 
         /** @var Type $savedType */
         foreach ($this->getSavedCustomTypes() as $savedType) {
@@ -139,11 +141,11 @@ class ProcessCTCustomTypesCommand extends ContainerAwareCommand
 
         $bar->start();
 
-        $results = $this->deleteOldCustomTypes($input->getArgument('whitelist'));
+        $results = $this->deleteOldCustomTypes($this->getWhitelist());
 
         $bar->advance();
 
-        $results = array_merge($results, $this->saveCustomTypes($bar));
+        $results = array_merge($results, $this->saveCustomTypes($bar, $this->getWhitelist()));
 
         $bar->finish();
 
@@ -305,6 +307,21 @@ class ProcessCTCustomTypesCommand extends ContainerAwareCommand
     }
 
     /**
+     * Returns the whitelist.
+     * @return string
+     */
+    private function getWhitelist(): string
+    {
+        if ($this->whitelist === null) {
+            $this->whitelist = '';
+
+            $this->setWhitelist($this->loadWhitelistFromConfig());
+        }
+
+        return $this->whitelist;
+    }
+
+    /**
      * Returns true, if there are changed field definition labels.
      * @param array $newFields
      * @param FieldDefinitionCollection $savedFields
@@ -412,6 +429,22 @@ class ProcessCTCustomTypesCommand extends ContainerAwareCommand
     }
 
     /**
+     * Interacts with the user.
+     *
+     * This method is executed before the InputDefinition is validated.
+     * This means that this is the only place where the command can
+     * interactively ask for values of missing required arguments.
+     * @param InputInterface  $input  An InputInterface instance
+     * @param OutputInterface $output An OutputInterface instance
+     */
+    protected function interact(InputInterface $input, OutputInterface $output)
+    {
+        if ($whitelist = $input->getArgument('whitelist')) {
+            $this->setWhitelist('/' . $whitelist . '/');
+        }
+    }
+
+    /**
      * Returns true, if the value is changed.
      * @param array $newValue
      * @param LocalizedString $oldValue
@@ -459,6 +492,34 @@ class ProcessCTCustomTypesCommand extends ContainerAwareCommand
         }
 
         return $collection;
+    }
+
+    /**
+     * Loads the whitelist from the config and creates an pregex out of it.
+     * @return string
+     */
+    private function loadWhitelistFromConfig(): string
+    {
+        $whitelist = $this->getContainer()->getParameter('best_it_ct_custom_types.whitelist');
+        $whitelistRegex = '';
+
+        if ($whitelist) {
+            $whitelistRegex =
+                '/' . sprintf(
+                    '(%s)',
+                    implode(
+                        '|',
+                        array_map(
+                            function($key) {
+                                return preg_quote($key, '/');
+                            },
+                            $whitelist
+                        )
+                    )
+                )  . '/';
+        }
+
+        return $whitelistRegex;
     }
 
     /**
@@ -609,16 +670,19 @@ class ProcessCTCustomTypesCommand extends ContainerAwareCommand
     /**
      * Saves the custom types from the config to the database.
      * @param ProgressBar $bar
+     * @param string $filter The pregex for filtering, which types are allowed to edit.
      * @return array false or Error-Message per Type-Key if there is something wrong.
      */
-    private function saveCustomTypes(ProgressBar $bar): array
+    private function saveCustomTypes(ProgressBar $bar, string $filter = ''): array
     {
         $results = [];
 
         foreach ($this->getCustomTypesConfig() as $customType) {
             $saved = $this->saveCustomType($customType);
 
-            $results[$customType['key']] = $saved;
+            if ((!$filter || preg_match($filter, $customType['key']))) {
+                $results[$customType['key']] = $saved;
+            }
 
             $bar->advance();
         }
@@ -645,6 +709,18 @@ class ProcessCTCustomTypesCommand extends ContainerAwareCommand
     private function setSavedCustomTypes(TypeCollection $savedCustomTypes): ProcessCTCustomTypesCommand
     {
         $this->savedCustomTypes = $savedCustomTypes;
+
+        return $this;
+    }
+
+    /**
+     * Sets the whitelist.
+     * @param string $whitelist
+     * @return ProcessCTCustomTypesCommand
+     */
+    private function setWhitelist(string $whitelist): ProcessCTCustomTypesCommand
+    {
+        $this->whitelist = $whitelist;
 
         return $this;
     }

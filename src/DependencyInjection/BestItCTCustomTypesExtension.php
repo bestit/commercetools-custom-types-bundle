@@ -26,5 +26,6 @@ class BestItCTCustomTypesExtension extends Extension
 
         $container->setAlias('best_it_ct_custom_types.client', $config['commercetools_client_service']);
         $container->setParameter('best_it_ct_custom_types.types', $config['types'] ?? []);
+        $container->setParameter('best_it_ct_custom_types.whitelist', $config['whitelist'] ?? []);
     }
 }

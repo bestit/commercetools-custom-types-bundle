@@ -26,6 +26,14 @@ class Configuration implements ConfigurationInterface
         $builder->root('best_it_ct_custom_types')
             ->children()
                 ->append($this->getTypesNode())
+                ->arrayNode('whitelist')
+                    ->info(
+                        'The shell command works on the complete set of types normally. To prevent side effects ' .
+                        'while changing or deleting types which are "unknown at this moment" define a whitelist for ' .
+                        'types, on which you are allowed to work on.'
+                    )
+                    ->prototype('scalar')->end()
+                ->end()
                 ->scalarNode('commercetools_client_service')->isRequired()->end()
             ->end();
 

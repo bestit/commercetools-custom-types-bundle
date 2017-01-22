@@ -48,7 +48,7 @@ class AppKernel extends Kernel
 ### Step 3: Configure
 
 ```yml
-# Default configuration for "BestItCTCustomTypesBundle"
+# Default configuration for extension with alias: "best_it_ct_custom_types"
 best_it_ct_custom_types:
 
     # Add the types mainly documented under: <https://dev.commercetools.com/http-api-projects-types.html>
@@ -74,11 +74,13 @@ best_it_ct_custom_types:
                 # Prototype
                 name:
                     type:                 # Required
-                        name:                 ~ # One of "Boolean"; "String"; "LocalizedString"; "Enum"; "Number"; "Money"; "Date"; "Time"; "DateTime"; "Set", Required
+                        name:                 ~ # One of "Boolean"; "String"; "LocalizedString"; "Enum"; "Number"; "Money"; "Date"; "T
+ime"; "DateTime"; "Set", Required
 
                         # Specially used to the set type: <http://dev.commercetools.com/http-api-projects-types.html#settype>
                         elementType:
-                            name:                 ~ # One of "Boolean"; "String"; "LocalizedString"; "Enum"; "Number"; "Money"; "Date"; "Time"; "DateTime"; "Set", Required
+                            name:                 ~ # One of "Boolean"; "String"; "LocalizedString"; "Enum"; "Number"; "Money"; "Date"
+; "Time"; "DateTime"; "Set", Required
                             values:
 
                                 # Prototype
@@ -93,7 +95,11 @@ best_it_ct_custom_types:
 
                         # Prototype
                         lang:                 ~
-    commercetools_client_service:  ~ # Required
+
+    # The shell command works on the complete set of types normally. To prevent side effects while changing or deleting types which ar
+e "unknown at this moment" define a whitelist for types, on which you are allowed to work on.
+    whitelist:            []
+    commercetools_client_service: ~ # Required
 ```
 
 ## Usage
@@ -105,9 +111,10 @@ $ php bin/console commercetools:process-custom-types [<whitelist>]
 ```
 
 **It tries to delete every custom type, which is not declared in your config or excluded by the
- whitelist pcre regex (without delimiter).**
+ whitelist (config or pcre regex without delimiter).**
 
 ## Further Todos
 
 * Add unittests
-* Support Enum Values
+* Refactor the command
+* better Support for complex tyes
