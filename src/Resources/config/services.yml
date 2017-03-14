@@ -1,0 +1,3 @@
+services:
+    best_it.ct_custom_types.collection.custom_type_collection:
+        class: BestIt\CTCustomTypesBundle\Collection\CustomTypeCollection
