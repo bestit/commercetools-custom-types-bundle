@@ -2,7 +2,9 @@
 
 namespace BestIt\CTCustomTypesBundle\DependencyInjection;
 
+use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
 /**
@@ -15,10 +17,7 @@ use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 class BestItCTCustomTypesExtension extends Extension
 {
     /**
-     * Loads the bundle config.
-     * @param array $configs
-     * @param ContainerBuilder $container
-     * @return void
+     * @inheritdoc
      */
     public function load(array $configs, ContainerBuilder $container)
     {
@@ -27,5 +26,8 @@ class BestItCTCustomTypesExtension extends Extension
         $container->setAlias('best_it_ct_custom_types.client', $config['commercetools_client_service']);
         $container->setParameter('best_it_ct_custom_types.types', $config['types'] ?? []);
         $container->setParameter('best_it_ct_custom_types.whitelist', $config['whitelist'] ?? []);
+
+        $loader = new YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
+        $loader->load('services.yml');
     }
 }

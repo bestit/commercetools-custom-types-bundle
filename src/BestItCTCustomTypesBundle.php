@@ -2,6 +2,8 @@
 
 namespace BestIt\CTCustomTypesBundle;
 
+use BestIt\CTCustomTypesBundle\DependencyInjection\Compiler\CollectionCompilerPass;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 /**
@@ -12,5 +14,11 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
  */
 class BestItCTCustomTypesBundle extends Bundle
 {
-
+    /**
+     * @inheritdoc
+     */
+    public function build(ContainerBuilder $container)
+    {
+        $container->addCompilerPass(new CollectionCompilerPass());
+    }
 }
