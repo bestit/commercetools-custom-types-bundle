@@ -542,7 +542,7 @@ class ProcessCTCustomTypesCommand extends ContainerAwareCommand
                     $values = [];
 
                     array_walk($typeField['type']['values'], function ($label, $key) use (&$values) {
-                        $values[] = ['key' => $key, 'label' => $label];
+                        $values[] = ['key' => (string) $key, 'label' => $label];
                     });
 
                     $typeField['type']['values'] = $values;
@@ -552,7 +552,7 @@ class ProcessCTCustomTypesCommand extends ContainerAwareCommand
                     $values = [];
 
                     array_walk($typeField['type']['elementType']['values'], function ($label, $key) use (&$values) {
-                        $values[] = ['key' => $key, 'label' => $label];
+                        $values[] = ['key' => (string) $key, 'label' => $label];
                     });
 
                     $typeField['type']['elementType']['values'] = $values;
