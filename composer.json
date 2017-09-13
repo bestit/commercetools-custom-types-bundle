@@ -7,7 +7,7 @@
     "name": "bestit/commercetools-custom-types-bundle",
     "description": "Bundle to help you with the creation of custom types.",
     "require": {
-        "commercetools/php-sdk": "^1.4",
+        "commercetools/php-sdk": "^1.4 || ^2.0",
         "php": "^7",
         "symfony/symfony": "^3.1"
     },
