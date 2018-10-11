@@ -27,6 +27,9 @@ class BestItCTCustomTypesExtension extends Extension
         $container->setParameter('best_it_ct_custom_types.types', $config['types'] ?? []);
         $container->setParameter('best_it_ct_custom_types.whitelist', $config['whitelist'] ?? []);
 
+        $alias = $container->getAlias('best_it_ct_custom_types.client');
+        $alias->setPublic(true);
+
         $loader = new YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('services.yml');
     }
