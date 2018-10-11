@@ -1,3 +1,8 @@
 services:
     best_it.ct_custom_types.collection.custom_type_collection:
         class: BestIt\CTCustomTypesBundle\Collection\CustomTypeCollection
+
+    best_it_ctcustom_types.command.process_ctcustom_types_command:
+        class: BestIt\CTCustomTypesBundle\Command\ProcessCTCustomTypesCommand
+        tags:
+            - { name: console.command }
