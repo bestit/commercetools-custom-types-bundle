@@ -3,6 +3,7 @@
 namespace BestIt\CTCustomTypesBundle\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
+use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
@@ -21,9 +22,10 @@ class Configuration implements ConfigurationInterface
      */
     public function getConfigTreeBuilder()
     {
-        $builder = new TreeBuilder();
+        $builder = new TreeBuilder('types');
+        $rootNode = $this->getRootNode($builder, 'best_it_ct_custom_types');
 
-        $builder->root('best_it_ct_custom_types')
+        $rootNode
             ->children()
                 ->append($this->getTypesNode())
                 ->arrayNode('whitelist')
@@ -46,7 +48,8 @@ class Configuration implements ConfigurationInterface
      */
     protected function getTypesNode(): ArrayNodeDefinition
     {
-        $node = (new TreeBuilder())->root('types');
+        $builder = new TreeBuilder('types');
+        $node = $this->getRootNode($builder, 'types');
 
         $node
             ->info(
@@ -149,5 +152,22 @@ class Configuration implements ConfigurationInterface
         ->end();
 
         return $node;
+    }
+
+    /**
+     * BC layer for symfony/config 4.1 and older
+     *
+     * @param TreeBuilder $treeBuilder
+     * @param $name
+     *
+     * @return ArrayNodeDefinition|NodeDefinition
+     */
+    private function getRootNode(TreeBuilder $treeBuilder, $name)
+    {
+        if (!method_exists($treeBuilder, 'getRootNode')) {
+            return $treeBuilder->root($name);
+        }
+
+        return $treeBuilder->getRootNode();
     }
 }
