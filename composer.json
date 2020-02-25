@@ -8,11 +8,14 @@
     "description": "Bundle to help you with the creation of custom types.",
     "require": {
         "commercetools/php-sdk": "^1.4 || ^2.0",
-        "php": "^7",
-        "symfony/symfony": "^3.1"
+        "php": "^7.0",
+        "symfony/http-kernel": "^3.1 || ^4.0 || ^5.0",
+        "symfony/dependency-injection": "^3.1 || ^4.0 || ^5.0",
+        "symfony/config": "^3.1 || ^4.0 || ^5.0",
+        "symfony/yaml": "^3.1 || ^4.0 || ^5.0",
+        "symfony/console": "^3.1 || ^4.0 || ^5.0"
     },
     "require-dev": {
-        "sensio/generator-bundle": "^3.0",
         "symfony/phpunit-bridge": "^3.0",
         "phpunit/phpunit": "^5.4",
         "squizlabs/php_codesniffer": "^2.7"

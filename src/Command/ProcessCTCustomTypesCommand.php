@@ -23,12 +23,15 @@ use Commercetools\Core\Request\Types\TypeUpdateByKeyRequest;
 use Commercetools\Core\Response\ErrorResponse;
 use Commercetools\Core\Response\PagedQueryResponse;
 use Commercetools\Core\Response\ResourceResponse;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Symfony\Component\DependencyInjection\ContainerAwareTrait;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Class ProcessCTCustomTypesCommand
@@ -38,8 +41,10 @@ use Symfony\Component\Console\Output\OutputInterface;
  * @todo Refactor and unittest.
  * @version $id$
  */
-class ProcessCTCustomTypesCommand extends ContainerAwareCommand
+class ProcessCTCustomTypesCommand extends Command implements ContainerAwareInterface
 {
+    use ContainerAwareTrait;
+
     /**
      * Maps checks and action creation for a field name.
      * @var array
@@ -723,5 +728,15 @@ class ProcessCTCustomTypesCommand extends ContainerAwareCommand
         $this->whitelist = $whitelist;
 
         return $this;
+    }
+
+    /**
+     * Get container
+     *
+     * @return ContainerInterface|null
+     */
+    public function getContainer(): ContainerInterface
+    {
+        return $this->container;
     }
 }
