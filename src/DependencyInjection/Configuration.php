@@ -102,9 +102,11 @@ class Configuration implements ConfigurationInterface
                                                 'Date',
                                                 'Time',
                                                 'DateTime',
-                                                'Set'
+                                                'Set',
+                                                'Reference',
                                             ])
                                         ->end()
+                                        ->scalarNode('referenceTypeId')->end()
                                         ->arrayNode('elementType')
                                             ->info(
                                                 'Specially used to the set type: <http://dev.commercetools.com/' .
